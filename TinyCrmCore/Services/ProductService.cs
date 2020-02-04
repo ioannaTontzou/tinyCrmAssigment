@@ -1,9 +1,9 @@
-﻿using TinyCrm.Model.Options;
-using TinyCrm.Model;
+﻿using TinyCrm.Core.Model.Options;
+using TinyCrm.Core.Model;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TinyCrm.Services
+namespace TinyCrm.Core.Services
 {
     public class ProductService : IProductService
     {

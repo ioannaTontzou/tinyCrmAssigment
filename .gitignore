@@ -1,0 +1,11 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/TinyCrm/v16
+/obj/Debug
+/packages
+/TinyCrmConsole/bin/Debug/netcoreapp3.1
+/TinyCrmConsole/obj
+/TinyCrmCore/bin/Debug/netstandard2.0
+/TinyCrmCore/obj
