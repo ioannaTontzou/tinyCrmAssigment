@@ -13,6 +13,8 @@ namespace TinyCrm.Core.Services
         bool UpdateProduct(string productId,UpdateProductOptions options);
 
         Product GetProductById(string id);
+
+        bool ImportCsv(string path);
         
     }
 }

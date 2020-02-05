@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using TinyCrm.Core.Model;
+using TinyCrm.Model;
+using TinyCrmCore.Model;
 
 namespace TinyCrm.Core.Data
 {
@@ -32,6 +34,14 @@ namespace TinyCrm.Core.Data
             modelBuilder
                 .Entity<Customer>()
                 .ToTable("Customer");
+
+            modelBuilder
+                .Entity<Order>()
+                .ToTable("Order");
+
+            modelBuilder
+               .Entity<ContactPerson>()
+               .ToTable("Contact");
         }
     }
 }

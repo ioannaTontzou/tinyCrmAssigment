@@ -11,11 +11,13 @@ namespace TinyCrm.Core.Services
     {
         public readonly TinyCrmContext contex;
 
-        private List<Product> ProductList =  new List<Product>();
+        private List<Product> ProductList = new List<Product>();
+
+        private Random random = new Random();
 
         public ProductService(TinyCrmContext ctx)
         {
-            contex = ctx ?? throw new ArgumentNullException(nameof(ctx)); 
+            contex = ctx ?? throw new ArgumentNullException(nameof(ctx));
         }
 
         public bool AddProduct(AddProductOptions options)
@@ -45,12 +47,13 @@ namespace TinyCrm.Core.Services
             if (options.Category == Model.ProductCategory.Invalid) {
                 return false;
             }
-            var prod = new Product() {
-            Id = options.Id,
-            Name = options.Name,
-            Price = options.Price,
-            Category = options.Category
-        };
+            var prod = new Product()
+            {
+                Id = options.Id,
+                Name = options.Name,
+                Price = options.Price,
+                Category = options.Category
+            };
 
             contex.Add(prod);
             var success = false;
@@ -59,56 +62,81 @@ namespace TinyCrm.Core.Services
             } catch (Exception) {
                 //log
             }
-            return success;   
+            return success;
         }
 
         public Product GetProductById(string id)
         {
-             if (string.IsNullOrWhiteSpace(id)) {
-                 return null;
-             }
-             /*
-             return ProductList.Where(s => s.Id.Equals(id))
-                  .SingleOrDefault(); */
+            if (string.IsNullOrWhiteSpace(id)) {
+                return null;
+            }
+            /*
+            return ProductList.Where(s => s.Id.Equals(id))
+                 .SingleOrDefault(); */
 
-             return  contex.Set<Product>()
-                           .SingleOrDefault(p => p.Id == id); 
+            return contex.Set<Product>()
+                          .SingleOrDefault(p => p.Id == id);
         }
 
-        public bool UpdateProduct(string productId,UpdateProductOptions options)
+        public bool ImportCsv(string path)
         {
-            if (options == null) {
+            if (string.IsNullOrWhiteSpace(path)) {
                 return false;
             }
-            var product = GetProductById(productId);
-            if ( product == null) {
-                product.Description = options.Description;
-            }
-            
-            if (!string.IsNullOrWhiteSpace(options.Description)) {
-                    
-            }
+            string[] products = System.IO.File.ReadAllLines(path);
+            IEnumerable<Product> queryProduct =
+             from productLine in products
+             let splitProd = productLine.Split(';')
+             select new Product()
+             {
+               Id = splitProd[0],
+                 Description = splitProd[1],
+                 Price = RandomDec(random)
+             };
 
-            /*  if ( options.Price !=null && options.Price <= 0) {
-                      return false;
-              }
-              */
-
-            if (options.Price != null) {
-                if(options.Price <= 0) {
-                    return false;
-                } else {
-                    product.Price = options.Price.Value;
-                }
-            }
-
-            if (options.Discount !=null &&options.Discount < 0) {
-                    return false;
-            }
-
+            contex.Add(queryProduct);
+            contex.SaveChanges();
             return true;
         }
 
-        
+        public bool UpdateProduct(string productId, UpdateProductOptions options)
+        {
+           
+                if (options == null) {
+                    return false;
+                }
+                var product = GetProductById(productId);
+                if (product == null) {
+                    return false;
+                }
+                if (!string.IsNullOrWhiteSpace(options.Description)) {
+                    product.Description = options.Description;
+                }
+                if (options.Price != null &&
+                  options.Price <= 0) {
+                    return false;
+                }
+                if (options.Price != null) {
+                    if (options.Price <= 0) {
+                        return false;
+                    } else {
+                        product.Price = options.Price.Value;
+                    }
+                }
+                if (options.Discount != null &&
+                  options.Discount < 0) {
+                    return false;
+                }
+                return true;
+            }
+
+        static decimal RandomDec(Random rm)
+        {
+            var randomPrice = (double)rm.Next(1, 100) +
+                Math.Round(rm.NextDouble(), 2);
+            return Convert.ToDecimal(randomPrice);
+        }
+
     }
-}
+    }
+

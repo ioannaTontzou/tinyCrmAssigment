@@ -16,13 +16,17 @@ namespace TinyCrmConsole
             using (var context = new TinyCrmContext()) {
                 var prservice = new ProductService(context);
                 prservice.AddProduct(
-                    new TinyCrm.Core.Model.Options.AddProductOptions()
-                    {
-                        Id = "15599",
-                        Category = ProductCategory.Smartphones,
-                        Price = 13.99M,
+
+
+
+
+               new TinyCrm.Core.Model.Options.AddProductOptions()
+                  {
+                    Id = "15599",
+                     Category = ProductCategory.Smartphones,
+                     Price = 13.99M,
                      Name = "MAC BOOK"
-                      });
+                      }); 
             }
 
 

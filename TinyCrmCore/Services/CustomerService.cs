@@ -5,13 +5,23 @@ using TinyCrm.Core.Model.Options;
 using TinyCrm.Core.Model;
 using TinyCrm.Core.Services;
 using System.Linq;
+using TinyCrm.Core.Data;
 
 namespace TinyCrmCore.Services
 {
 
-    class CustomerService : ICustomerService
+   public class CustomerService : ICustomerService
     {
         public static List<Customer> CustomerList = new List<Customer>();
+
+        public readonly TinyCrmContext contex;
+
+        private List<Product> ProductList = new List<Product>();
+
+        public CustomerService(TinyCrmContext ctx)
+        {
+            contex = ctx ?? throw new ArgumentNullException(nameof(ctx));
+        }
         public bool CreateCustomer(AddCustomerOptions options)
         {
 

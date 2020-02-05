@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using TinyCrm.Model;
+using TinyCrmCore.Model;
 
 namespace TinyCrm.Core.Model
 {
@@ -38,10 +41,14 @@ namespace TinyCrm.Core.Model
 
         public bool Status { get; set; }
 
+        public ICollection<ContactPerson> Contacts { get; set; }
+        public ICollection<Order> Orders { get;  set; }
+
         public Customer()
         {
-
+            Orders = new List<Order>();
             Created = DateTimeOffset.Now;
+            Contacts = new List<ContactPerson>();
         }
 
     }

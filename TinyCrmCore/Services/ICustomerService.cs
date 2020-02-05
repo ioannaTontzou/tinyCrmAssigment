@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace TinyCrm.Core.Services
 {
-    interface ICustomerService
+   public interface ICustomerService
     {
         bool CreateCustomer(AddCustomerOptions options);
 
