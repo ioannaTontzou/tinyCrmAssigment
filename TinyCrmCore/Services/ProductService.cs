@@ -11,10 +11,6 @@ namespace TinyCrm.Core.Services
     {
         public readonly TinyCrmContext contex;
 
-        private List<Product> ProductList = new List<Product>();
-
-        private Random random = new Random();
-
         public ProductService(TinyCrmContext ctx)
         {
             contex = ctx ?? throw new ArgumentNullException(nameof(ctx));
@@ -26,11 +22,10 @@ namespace TinyCrm.Core.Services
             if (options == null) {
                 return false;
             }
-            if (string.IsNullOrWhiteSpace(options.Id)) {
+            if (options.Id == 0) {
                 return false;
             }
-            // var product = ProductList.Where(s => s.Id.Equals(options.Id))
-            //   .SingleOrDefault();
+           
             var product = GetProductById(options.Id);
             if (product != null) {
                 return false;
@@ -60,83 +55,85 @@ namespace TinyCrm.Core.Services
             try {
                 success = contex.SaveChanges() > 0;
             } catch (Exception) {
-                //log
+                Console.WriteLine("No Success !");
             }
             return success;
         }
 
-        public Product GetProductById(string id)
+        public Product GetProductById(int id)
         {
-            if (string.IsNullOrWhiteSpace(id)) {
+            if (id == 0) {
                 return null;
             }
-            /*
-            return ProductList.Where(s => s.Id.Equals(id))
-                 .SingleOrDefault(); */
+            var option = new TinyCrm.Core.Model.Options.SearchProductOption()
+            {
+                Id = id
+            };
 
-            return contex.Set<Product>()
-                          .SingleOrDefault(p => p.Id == id);
+            return SearchProduct(option).SingleOrDefault();
+
+
         }
 
-        public bool ImportCsv(string path)
+        public bool UpdateProduct(int productId, UpdateProductOptions options)
         {
-            if (string.IsNullOrWhiteSpace(path)) {
+
+            if (options == null) {
                 return false;
             }
-            string[] products = System.IO.File.ReadAllLines(path);
-            IEnumerable<Product> queryProduct =
-             from productLine in products
-             let splitProd = productLine.Split(';')
-             select new Product()
-             {
-               Id = splitProd[0],
-                 Description = splitProd[1],
-                 Price = RandomDec(random)
-             };
-
-            contex.Add(queryProduct);
-            contex.SaveChanges();
+            var product = GetProductById(productId);
+            if (product == null) {
+                return false;
+            }
+            if (!string.IsNullOrWhiteSpace(options.Description)) {
+                product.Description = options.Description;
+            }
+            if (options.Price != null &&
+              options.Price <= 0) {
+                return false;
+            }
+            if (options.Price != null) {
+                if (options.Price <= 0) {
+                    return false;
+                } else {
+                    product.Price = options.Price.Value;
+                }
+            }
+            if (options.Discount != null &&
+              options.Discount < 0) {
+                return false;
+            }
             return true;
         }
 
-        public bool UpdateProduct(string productId, UpdateProductOptions options)
+        public  ICollection<Product> SearchProduct(SearchProductOption option)
         {
-           
-                if (options == null) {
-                    return false;
-                }
-                var product = GetProductById(productId);
-                if (product == null) {
-                    return false;
-                }
-                if (!string.IsNullOrWhiteSpace(options.Description)) {
-                    product.Description = options.Description;
-                }
-                if (options.Price != null &&
-                  options.Price <= 0) {
-                    return false;
-                }
-                if (options.Price != null) {
-                    if (options.Price <= 0) {
-                        return false;
-                    } else {
-                        product.Price = options.Price.Value;
-                    }
-                }
-                if (options.Discount != null &&
-                  options.Discount < 0) {
-                    return false;
-                }
-                return true;
+            if (option == null) {
+                return null;
             }
-
-        static decimal RandomDec(Random rm)
-        {
-            var randomPrice = (double)rm.Next(1, 100) +
-                Math.Round(rm.NextDouble(), 2);
-            return Convert.ToDecimal(randomPrice);
+            if (option.Id != 0) {
+                var prod = contex
+                       .Set<Product>()
+                       .Where(p => p.Id == option.Id)
+                       .ToList();
+                return prod;
+            }
+            if (!string.IsNullOrWhiteSpace(option.Name)) {
+                var prod = contex
+                          .Set<Product>()
+                          .Where(p => p.Name == option.Name)
+                          .ToList();
+                return prod;
+            }
+            if (option.Category != ProductCategory.Invalid) {
+                var prod = contex
+                          .Set<Product>()
+                          .Where(p => p.Category == option.Category)
+                          .ToList();
+                return prod;
+            }
+            return null;
         }
-
     }
-    }
+}
 

@@ -12,11 +12,11 @@ namespace TinyCrmCore.Services
 
    public class CustomerService : ICustomerService
     {
-        public static List<Customer> CustomerList = new List<Customer>();
+     
 
         public readonly TinyCrmContext contex;
 
-        private List<Product> ProductList = new List<Product>();
+       
 
         public CustomerService(TinyCrmContext ctx)
         {
@@ -37,7 +37,13 @@ namespace TinyCrmCore.Services
             if (string.IsNullOrWhiteSpace(options.Email)) {
                 return false;
             }
-            if (string.IsNullOrWhiteSpace(options.VatNumber) || CustomerList.Where(s => s.VatNumber.Equals(options.VatNumber)) == null) {
+
+            var cust = contex
+                .Set<Customer>()
+                .Where(s => s.VatNumber.Equals(options.VatNumber))
+                .SingleOrDefault();
+
+            if (string.IsNullOrWhiteSpace(options.VatNumber) || cust == null) {
                 return false;
             }
 
@@ -50,57 +56,74 @@ namespace TinyCrmCore.Services
                 Created = DateTimeOffset.Now.Date,
 
             };
+            cust = contex
+              .Set<Customer>()
+              .Find(newCustomer);
 
-            if (CustomerList.Contains(newCustomer)) {
+            if (cust != null) {
                 return false;
             }
-            CustomerList.Add(newCustomer);
-            return true;
+            contex.Add(newCustomer);
+            var success = false;
+            try {
+                success = contex.SaveChanges() > 0;
+            } catch (Exception) {
+                Console.WriteLine("No Success !");
+            }
+            return success;
         }
 
-        public List<Customer> SearchCustomer(SearchCustomerOptions option)
+        public ICollection<Customer> SearchCustomer(SearchCustomerOptions option)
         {
-            var activeCustomerList = new List<Customer>(CustomerList);
-            activeCustomerList = activeCustomerList
-                .Where(c => c.Status == true).ToList();
-
-
+            
+             var activeCustomerList = contex
+                                      .Set<Customer>()
+                                      .Where(c => c.Status == true)
+                                      .ToList();
             if (option == null) {
                 return null;
             }
 
-            if (!string.IsNullOrWhiteSpace(option.Id)) {
-                activeCustomerList = activeCustomerList
+            if (option.Id !=0) {
+                activeCustomerList = contex
+                                     .Set<Customer>()
+                                     .Where(c => c.Status == true)
                                      .Where(c => c.Id.Equals(option.Id))
                                      .ToList();
             }
 
             if (!string.IsNullOrWhiteSpace(option.Phone)) {
-                activeCustomerList = activeCustomerList
-                                  .Where(c => c.Phone.Equals(option.Phone))
-                                  .ToList();
+                activeCustomerList = contex
+                                     .Set<Customer>()
+                                     .Where(c => c.Status == true)
+                                     .Where(c => c.Phone.Equals(option.Phone))
+                                     .ToList();
             }
 
             if (!string.IsNullOrWhiteSpace(option.Email)) {
-                activeCustomerList = activeCustomerList
+                activeCustomerList = contex.Set<Customer>()
+                                     .Where(c => c.Status == true)
                                      .Where(c => c.Email.Equals(option.Email))
                                      .ToList();
             }
 
             if (!string.IsNullOrWhiteSpace(option.LastName)) {
-                activeCustomerList = activeCustomerList
+                activeCustomerList =   contex.Set<Customer>()
+                                      .Where(c => c.Status == true)
                                       .Where(c => c.Lastname.Equals(option.LastName))
                                       .ToList();
             }
 
             if (!string.IsNullOrWhiteSpace(option.VatNumber)) {
-                activeCustomerList = activeCustomerList
-                                 .Where(c => c.VatNumber.Equals(option.VatNumber))
-                                 .ToList();
+                activeCustomerList = contex.Set<Customer>()
+                                     .Where(c => c.Status == true)
+                                     .Where(c => c.VatNumber.Equals(option.VatNumber))
+                                     .ToList();
             }
 
             if (option.DateCreated != null) {
-                activeCustomerList = activeCustomerList
+                activeCustomerList = contex.Set<Customer>()
+                                   .Where(c => c.Status == true)
                                    .Where(c => c.Created == option.DateCreated)
                                    .ToList();
             }
@@ -109,7 +132,7 @@ namespace TinyCrmCore.Services
             return activeCustomerList;
         }
 
-        public bool UpdateCustomer(string customerId, UpdateCustomerOprions options)
+        public bool UpdateCustomer(int customerId, UpdateCustomerOprions options)
         {
             if (options == null) {
                 return false;
@@ -137,13 +160,17 @@ namespace TinyCrmCore.Services
             return true;
         }
 
-        public Customer GetCustomerById(string id)
+        public Customer GetCustomerById( int id)
         {
-            if (string.IsNullOrWhiteSpace(id)) {
+            if ( id == 0) {
                 return null;
             }
-            return CustomerList.Where(s => s.Id.Equals(id))
+            return contex
+                .Set<Customer>()
+                .Where(s => s.Id == id)
                  .SingleOrDefault();
         }
+
+       
     }
 }

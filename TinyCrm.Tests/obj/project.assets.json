@@ -8034,11 +8034,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\KCA11\\devel\\TinyCrm\\TinyCrm.Tests\\TinyCrm.Tests.csproj",
+      "projectUniqueName": "C:\\Users\\KCA11\\devel\\Assigment\\TinyCrm\\TinyCrm.Tests\\TinyCrm.Tests.csproj",
       "projectName": "TinyCrm.Tests",
-      "projectPath": "C:\\Users\\KCA11\\devel\\TinyCrm\\TinyCrm.Tests\\TinyCrm.Tests.csproj",
+      "projectPath": "C:\\Users\\KCA11\\devel\\Assigment\\TinyCrm\\TinyCrm.Tests\\TinyCrm.Tests.csproj",
       "packagesPath": "C:\\Users\\KCA11\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\KCA11\\devel\\TinyCrm\\TinyCrm.Tests\\obj\\",
+      "outputPath": "C:\\Users\\KCA11\\devel\\Assigment\\TinyCrm\\TinyCrm.Tests\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\KCA11\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -8054,8 +8054,8 @@
       "frameworks": {
         "netcoreapp3.1": {
           "projectReferences": {
-            "C:\\Users\\KCA11\\devel\\TinyCrm\\TinyCrmCore\\TinyCrmCore.csproj": {
-              "projectPath": "C:\\Users\\KCA11\\devel\\TinyCrm\\TinyCrmCore\\TinyCrmCore.csproj"
+            "C:\\Users\\KCA11\\devel\\Assigment\\TinyCrm\\TinyCrmCore\\TinyCrmCore.csproj": {
+              "projectPath": "C:\\Users\\KCA11\\devel\\Assigment\\TinyCrm\\TinyCrmCore\\TinyCrmCore.csproj"
             }
           }
         }

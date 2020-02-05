@@ -1,4 +1,5 @@
 ﻿
+using System.Collections.Generic;
 using TinyCrm.Core.Model;
 using TinyCrm.Core.Model.Options;
 
@@ -10,11 +11,12 @@ namespace TinyCrm.Core.Services
        
         bool AddProduct(AddProductOptions options);
 
-        bool UpdateProduct(string productId,UpdateProductOptions options);
+        bool UpdateProduct(int productId,UpdateProductOptions options);
 
-        Product GetProductById(string id);
+       Product GetProductById(int id);
 
-        bool ImportCsv(string path);
+        ICollection<Product> SearchProduct(SearchProductOption option);
+
         
     }
 }

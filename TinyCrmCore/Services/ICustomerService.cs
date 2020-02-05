@@ -9,9 +9,9 @@ namespace TinyCrm.Core.Services
         bool CreateCustomer(AddCustomerOptions options);
 
         //Update data of a customer
-        bool UpdateCustomer(string customerId, UpdateCustomerOprions oprions);
+        bool UpdateCustomer(int customerId, UpdateCustomerOprions oprions);
 
         //Search for customers 
-        List<Customer> SearchCustomer(SearchCustomerOptions option);
+        ICollection<Customer> SearchCustomer(SearchCustomerOptions option);
     }
 }

@@ -28,11 +28,8 @@ namespace TinyCrm.Core.Model.Options
         /// </summary>
         public string LastName { get; set; }
 
-        /// <summary>
-        /// 
-        /// </summary>
+       
         
-
         /// <summary>
         /// 
         /// </summary>
