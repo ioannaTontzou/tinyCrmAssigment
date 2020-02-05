@@ -28,5 +28,7 @@ namespace TinyCrm.Core.Model.Options
         /// 
         /// </summary>
         public string Phone { get; set; }
+
+        public bool Status { get; set; }
     }
 }

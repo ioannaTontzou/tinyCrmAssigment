@@ -22,14 +22,16 @@ namespace TinyCrm.Core.Data
             optionsBuilder.UseSqlServer(connectionString_);
 
         }
-
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder
                 .Entity<Product>()
                 .ToTable("Product");
+
+            modelBuilder
+                .Entity<Customer>()
+                .ToTable("Customer");
         }
     }
 }

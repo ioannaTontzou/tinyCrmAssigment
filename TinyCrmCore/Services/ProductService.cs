@@ -2,12 +2,21 @@
 using TinyCrm.Core.Model;
 using System.Collections.Generic;
 using System.Linq;
+using TinyCrm.Core.Data;
+using System;
 
 namespace TinyCrm.Core.Services
 {
     public class ProductService : IProductService
     {
+        public readonly TinyCrmContext contex;
+
         private List<Product> ProductList =  new List<Product>();
+
+        public ProductService(TinyCrmContext ctx)
+        {
+            contex = ctx ?? throw new ArgumentNullException(nameof(ctx)); 
+        }
 
         public bool AddProduct(AddProductOptions options)
         {
@@ -15,49 +24,55 @@ namespace TinyCrm.Core.Services
             if (options == null) {
                 return false;
             }
-           if (string.IsNullOrWhiteSpace(options.Id)) {
+            if (string.IsNullOrWhiteSpace(options.Id)) {
                 return false;
-             }
+            }
             // var product = ProductList.Where(s => s.Id.Equals(options.Id))
             //   .SingleOrDefault();
             var product = GetProductById(options.Id);
             if (product != null) {
                 return false;
             }
-                if ( GetProductById(options.Id) != null) {
+            if (GetProductById(options.Id) != null) {
                 return false;
             }
             if (string.IsNullOrWhiteSpace(options.Name)) {
                 return false;
             }
-            if (options.Price <=0) {
+            if (options.Price <= 0) {
                 return false;
             }
             if (options.Category == Model.ProductCategory.Invalid) {
                 return false;
             }
-           var  prod1 = new Product();
+            var prod = new Product() {
+            Id = options.Id,
+            Name = options.Name,
+            Price = options.Price,
+            Category = options.Category
+        };
 
-            prod1.Id = options.Id;
-            prod1.Name = options.Name;
-            prod1.Price = options.Price;
-            prod1.Category = options.Category;
-
-            ProductList.Add(prod1);
-
-            return true;
-            
+            contex.Add(prod);
+            var success = false;
+            try {
+                success = contex.SaveChanges() > 0;
+            } catch (Exception) {
+                //log
+            }
+            return success;   
         }
 
         public Product GetProductById(string id)
         {
-            if (string.IsNullOrWhiteSpace(id)) {
-                return null;
-            }
-            return ProductList.Where(s => s.Id.Equals(id))
-                 .SingleOrDefault();
-           
-           
+             if (string.IsNullOrWhiteSpace(id)) {
+                 return null;
+             }
+             /*
+             return ProductList.Where(s => s.Id.Equals(id))
+                  .SingleOrDefault(); */
+
+             return  contex.Set<Product>()
+                           .SingleOrDefault(p => p.Id == id); 
         }
 
         public bool UpdateProduct(string productId,UpdateProductOptions options)
@@ -87,12 +102,9 @@ namespace TinyCrm.Core.Services
                 }
             }
 
-
             if (options.Discount !=null &&options.Discount < 0) {
                     return false;
             }
-
-
 
             return true;
         }

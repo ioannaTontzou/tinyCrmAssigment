@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TinyCrm.Core.Data;
 
 namespace TinyCrmCore.Migrations
 {
     [DbContext(typeof(TinyCrmContext))]
-    partial class TinyCrmContextModelSnapshot : ModelSnapshot
+    [Migration("20200204111628_new_customer2")]
+    partial class new_customer2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

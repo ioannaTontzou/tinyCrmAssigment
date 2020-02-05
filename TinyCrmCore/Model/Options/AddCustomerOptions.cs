@@ -31,12 +31,12 @@ namespace TinyCrm.Core.Model.Options
         /// <summary>
         /// 
         /// </summary>
-        public int Id { get; private set; }
+        
 
         /// <summary>
         /// 
         /// </summary>
         public string Phone { get; set; }
-
+        
     }
 }

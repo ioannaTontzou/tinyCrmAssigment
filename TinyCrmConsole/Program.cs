@@ -2,6 +2,8 @@
 using System.Linq;
 using TinyCrm.Core.Model;
 using TinyCrm.Core.Data;
+using TinyCrm.Core.Services;
+
     
 
 
@@ -11,29 +13,66 @@ namespace TinyCrmConsole
     {
         static void Main(string[] args)
         {
-            var context = new TinyCrmContext();
-            Console.WriteLine(context.Database.CanConnect());
+            using (var context = new TinyCrmContext()) {
+                var prservice = new ProductService(context);
+                prservice.AddProduct(
+                    new TinyCrm.Core.Model.Options.AddProductOptions()
+                    {
+                        Id = "15599",
+                        Category = ProductCategory.Smartphones,
+                        Price = 13.99M,
+                     Name = "MAC BOOK"
+                      });
+            }
 
-            context.Database.EnsureCreated();
 
-         /* var products=  context.Set<Product>()
-                          .Where(p => p.Price > 100M);
-            var p = products.ToList();
-            Console.ReadKey(); */
 
-            var p = new Product()
+            /* var products=  context.Set<Product>()
+                             .Where(p => p.Price > 100M);
+               var p = products.ToList();
+               Console.ReadKey(); */
+
+            /*  var q = context.Set<Customer>()
+                             .Where(c => c.Id == 2);
+              var customer = q.SingleOrDefault();
+
+             if(customer != null) {
+                  context.Remove(customer);
+                  context.SaveChanges();
+              } */
+
+            
+
+
+       
+          /*  var product1 = new Product()
             {
-               Id="ggg",
+               Id="12399",
                Category = ProductCategory.Smartphones,
-               Price=99.99M,
+               Price=13.99M,
                Discount = 0
             };
+            */
 
-            context.Add(p);
-            context.SaveChanges();
+          /*  var customer1 = new Customer()
+            {
+                Lastname = "papadopouos",
+                Firstname = "Kostas",
+                Created = DateTimeOffset.Now
+            };
 
-            context.Remove(p);
+            context.Add(customer1);
+            
             context.SaveChanges();
+            */
+            
+
+
+
+
+
+
+
 
 
         }
